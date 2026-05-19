@@ -1,0 +1,13 @@
+# 2. Generar un inventario visual de las Máquinas Virtuales actuales
+- name: Listar todas las VMs del ESXi
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Consultar la API para extraer el registro
+      community.vmware.vmware_vm_info:
+        hostname: "192.168.1.120"
+        validate_certs: false
+      register: listado_vms
+    - name: Mostrar unicamente los nombres de las maquinas
+      ansible.builtin.debug:
+        var: listado_vms.virtual_machines | map(attribute='guest_name') | list

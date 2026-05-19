@@ -1,0 +1,13 @@
+# 1. Obtener información de estado y versión del Host ESXi
+- name: Info del Host ESXi Standalone
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Recopilar todos los facts del hipervisor
+      community.vmware.vmware_host_facts:
+        hostname: "192.168.1.120"
+        validate_certs: false
+      register: host_facts
+    - name: Imprimir la version del ESXi
+      ansible.builtin.debug:
+        msg: "El host esta ejecutando la version: {{ host_facts.ansible_facts.vmware_host_version }}"

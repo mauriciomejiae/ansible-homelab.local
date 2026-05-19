@@ -1,0 +1,17 @@
+# 3. Crear una Máquina Virtual desde cero
+- name: Provisionamiento de Hardware Virtual
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Crear contenedor lógico de VM
+      community.vmware.vmware_guest:
+        hostname: "192.168.1.120"
+        validate_certs: false
+        name: "Servidor_Aplicativo_01"
+        state: present
+        guest_id: "windows2019srv_64Guest" 
+        datastore: "datastore1"
+        hardware:
+          memory_mb: 4096
+          num_cpus: 2
+          scsi: paravirtual

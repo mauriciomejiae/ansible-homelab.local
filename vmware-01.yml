@@ -11,7 +11,7 @@
   tasks:
     - name: Recopilar todos los facts del hipervisor
       community.vmware.vmware_host_facts:
-        hostname: "192.168.1.120"
+        hostname: "192.168.2.16"
         # Nota: Recuerda agregar username y password si no los tienes en variables de entorno o ansible.cfg
         username: "{{ vmware_username | default(omit) }}"
         password: "{{ vmware_password | default(omit) }}"

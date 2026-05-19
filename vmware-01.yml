@@ -1,13 +1,23 @@
+---
 # 1. Obtener información de estado y versión del Host ESXi
 - name: Info del Host ESXi Standalone
   hosts: localhost
   gather_facts: false
+  
+  # Opción para silenciar el warning de la colección en este playbook
+  collections:
+    - community.vmware
+
   tasks:
     - name: Recopilar todos los facts del hipervisor
       community.vmware.vmware_host_facts:
-        hostname: "192.168.2.16"
+        hostname: "192.168.1.120"
+        # Nota: Recuerda agregar username y password si no los tienes en variables de entorno o ansible.cfg
+        username: "{{ vmware_username | default(omit) }}"
+        password: "{{ vmware_password | default(omit) }}"
         validate_certs: false
       register: host_facts
+
     - name: Imprimir la version del ESXi
       ansible.builtin.debug:
-        msg: "El host esta ejecutando la version: {{ host_facts.ansible_facts.vmware_host_version }}"
+        msg: "El host esta ejecutando la version: {{ host_facts.ansible_facts.ansible_system_vendor_info.product_version }}"

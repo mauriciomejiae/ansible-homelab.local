@@ -5,7 +5,7 @@
   tasks:
     - name: Crear contenedor lógico de VM
       community.vmware.vmware_guest:
-        hostname: "192.168.1.120"
+        hostname: "192.168.2.16"
         validate_certs: false
         name: "Servidor_Aplicativo_01"
         state: present

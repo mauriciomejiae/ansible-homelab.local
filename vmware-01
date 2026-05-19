@@ -5,7 +5,7 @@
   tasks:
     - name: Recopilar todos los facts del hipervisor
       community.vmware.vmware_host_facts:
-        hostname: "192.168.1.120"
+        hostname: "192.168.2.16"
         validate_certs: false
       register: host_facts
     - name: Imprimir la version del ESXi

@@ -1,0 +1,11 @@
+# 4. Encender una Máquina Virtual existente
+- name: Operacion de Encendido
+  hosts: esxi01.homelab.local
+  gather_facts: false
+  tasks:
+    - name: Mandar señal ACPI de encendido
+      community.vmware.vmware_guest_powerstate:
+        hostname: "192.168.1.120"
+        validate_certs: false
+        name: "RHEL9"
+        state: powered-on

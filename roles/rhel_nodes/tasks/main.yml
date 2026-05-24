@@ -1,0 +1,55 @@
+---
+# ==========================================
+# 🟢 10 TAREAS BÁSICAS (RHEL 9)
+# ==========================================
+- name: "B1: RHEL - Actualizar todos los paquetes (dnf update)"
+  ansible.builtin.dnf: name=* state=latest
+  become: yes
+- name: "B2: RHEL - Configurar Zona Horaria a Lima"
+  community.general.timezone: name="America/Lima"
+- name: "B3: RHEL - Verificar estado de SELinux"
+  ansible.posix.selinux: policy=targeted state=enforcing
+- name: "B4: RHEL - Habilitar e iniciar Chrony (NTP)"
+  ansible.builtin.service: name=chronyd state=started enabled=yes
+- name: "B5: RHEL - Crear usuario administrador 'developer'"
+  ansible.builtin.user: name=developer shell=/bin/bash groups=wheel append=yes
+- name: "B6: RHEL - Establecer hostname"
+  ansible.builtin.hostname: name="{{ inventory_hostname }}"
+- name: "B7: RHEL - Instalar utilidades base (vim, git, tar)"
+  ansible.builtin.dnf: name=['vim', 'git', 'tar'] state=present
+- name: "B8: RHEL - Cambiar puerto SSH a 22 (Auditoría)"
+  ansible.builtin.lineinfile: path=/etc/ssh/sshd_config regexp='^#?Port' line='Port 22'
+- name: "B9: RHEL - Crear directorio para montajes"
+  ansible.builtin.file: path=/mnt/data state=directory mode='0755'
+- name: "B10: RHEL - Recopilar estado de servicios"
+  ansible.builtin.service_facts:
+
+ 
+# ==========================================
+# 🚀 10 TAREAS AVANZADAS (RHEL 9)
+# ==========================================
+- name: "A1: RHEL - Instalar fapolicyd (Control de ejecución)"
+  ansible.builtin.dnf: name=fapolicyd state=present
+- name: "A2: RHEL - Hardening sysctl (IP Forwarding)"
+  ansible.posix.sysctl: name=net.ipv4.ip_forward value='0' sysctl_set=yes state=present
+- name: "A3: RHEL - Extender volumen lógico LVM (Ejemplo)"
+  community.general.lvol: vg=rhel lv=root size=+5G resizefs=yes
+  ignore_errors: true # Por si no hay espacio libre
+- name: "A4: RHEL - Configurar Firewall (Abrir HTTP/HTTPS)"
+  ansible.posix.firewalld: service="{{ item }}" permanent=yes state=enabled immediate=yes
+  loop: ['http', 'https']
+- name: "A5: RHEL - Instalar Cockpit (Consola Web RHEL)"
+  ansible.builtin.dnf: name=cockpit state=present
+- name: "A6: RHEL - Iniciar socket de Cockpit"
+  ansible.builtin.systemd: name=cockpit.socket state=started enabled=yes
+- name: "A7: RHEL - Aplicar reglas de Auditd (Monitoreo de red)"
+  ansible.builtin.lineinfile: path=/etc/audit/rules.d/audit.rules line='-a always,exit -F arch=b64 -S connect -k network_out'
+- name: "A8: RHEL - Registrar sistema en Red Hat Subscription (Opcional)"
+  community.general.redhat_subscription: state=present username="{{ rh_user | default(omit) }}" password="{{ rh_pass | default(omit) }}" auto_attach=true
+  ignore_errors: true
+- name: "A9: RHEL - Configurar Kdump (Crash dump)"
+  ansible.builtin.service: name=kdump state=started enabled=yes
+- name: "A10: RHEL - Aplicar Crypto-Policies estables"
+  ansible.builtin.command: update-crypto-policies --set DEFAULT
+
+

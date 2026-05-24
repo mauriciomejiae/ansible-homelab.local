@@ -1,0 +1,18 @@
+---
+collections:
+  # Colección oficial para interactuar con sistemas Windows (Win10 / Win2025)
+  - name: ansible.windows
+    version: '2.2.0'
+  
+  # Colección para módulos generales del sistema
+  - name: community.general
+    version: '8.6.0'
+  
+  # Colección específica para automatizar VMs y clúster en Proxmox
+  - name: community.proxmox
+    version: '1.4.0'
+  
+  # Colección para tareas nativas de Linux
+  - name: ansible.posix
+    version: '1.5.0'
+

@@ -1,0 +1,30 @@
+---
+- name: 🌟 ORQUESTACIÓN MAESTRA - HOMELAB 🌟
+  hosts: all
+  gather_facts: yes
+  tasks:
+    # 🔴 Ejecutar solo si el host pertenece al grupo RHEL
+    - import_role:
+        name: rhel_nodes
+      when: "'rhel_nodes' in group_names"
+
+    # 🟣 Ejecutar solo si el host pertenece al grupo Debian/Ubuntu
+    - import_role:
+        name: debian_ubuntu_nodes
+      when: "'debian_ubuntu_nodes' in group_names"
+
+    # ☁️ Ejecutar solo si el host pertenece al grupo Proxmox
+    - import_role:
+        name: proxmox_nodes
+      when: "'proxmox_nodes' in group_names"
+
+    # 💻 Ejecutar solo si el host pertenece al grupo Windows 10
+    - import_role:
+        name: win10_nodes
+      when: "'win10_nodes' in group_names"
+
+    # 🏢 Ejecutar solo si el host pertenece al grupo Windows Server 2025
+    - import_role:
+        name: win2025_nodes
+      when: "'win2025_nodes' in group_names"
+

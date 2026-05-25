@@ -6,54 +6,57 @@
   ansible.builtin.apt:
     update_cache: yes
     upgrade: dist
-    
-- name: "Asegurar que ufw esté instalado"
+    cache_valid_time: 3600
+
+- name: "B2: DEB - Asegurar que ufw esté instalado"
   ansible.builtin.apt:
     name: ufw
     state: present
 
-- name: "B2: DEB - Habilitar Firewall UFW"
+- name: "B3: DEB - Habilitar Firewall UFW"
   community.general.ufw:
     state: enabled
     policy: allow
+  ignore_errors: true # Por si hay conflictos de red en contenedores o nodos específicos
 
-- name: "B3: DEB - Crear usuario estandar 'devops'"
+- name: "B4: DEB - Crear usuario estandar 'devops'"
   ansible.builtin.user:
     name: devops
     shell: /bin/bash
     groups: sudo
+    append: yes
 
-- name: "B4: DEB - Revisar uso de disco"
+- name: "B5: DEB - Revisar uso de disco"
   ansible.builtin.command: df -h
+  changed_when: false
 
-- name: "B5: DEB - Configurar MOTD (Mensaje de bienvenida)"
+- name: "B6: DEB - Configurar MOTD (Mensaje de bienvenida)"
   ansible.builtin.copy:
     content: "Bienvenido a PCLINUX PERÚ - Nodo Ubuntu/Debian\n"
     dest: /etc/motd
+    mode: '0644'
 
-- name: "B6: DEB - Instalar curl y wget"
+- name: "B7: DEB - Instalar curl y wget"
   ansible.builtin.apt:
-    name: ['curl', 'wget']
+    name:
+      - curl
+      - wget
     state: present
 
-- name: "B7: DEB - Revisar syslog"
+- name: "B8: DEB - Revisar syslog"
   ansible.builtin.command: tail -n 10 /var/log/syslog
   changed_when: false
 
-- name: "B8: DEB - Autoremove dependencias huérfanas"
+- name: "B9: DEB - Autoremove dependencias huérfanas"
   ansible.builtin.apt:
     autoremove: yes
     autoclean: yes
 
-- name: "B9: DEB - Asegurar permisos de SSH"
+- name: "B10: DEB - Asegurar permisos de SSH y reiniciar"
   ansible.builtin.file:
     path: /etc/ssh/sshd_config
     mode: '0644'
-
-- name: "B10: DEB - Reiniciar servicio SSH"
-  ansible.builtin.service:
-    name: ssh
-    state: restarted
+  notify: Reiniciar SSH
 
 # ==========================================
 # 🚀 10 TAREAS AVANZADAS (DEBIAN/UBUNTU)
@@ -79,12 +82,12 @@
     state: started
     enabled: yes
 
-- name: "A5: DEB - Instalar MariaDB (Base de datos base)"
+- name: "A5: DEB - Instalar MariaDB (Base de datos)"
   ansible.builtin.apt:
     name: mariadb-server
     state: present
 
-- name: "A6: DEB - Instalar Fail2Ban para seguridad"
+- name: "A6: DEB - Instalar Fail2Ban"
   ansible.builtin.apt:
     name: fail2ban
     state: present
@@ -100,9 +103,9 @@
     name: prometheus-node-exporter
     state: present
 
-- name: "A9: DEB - Reiniciar AppArmor"
+- name: "A9: DEB - Reiniciar AppArmor (Si está instalado)"
   ansible.builtin.service:
     name: apparmor
     state: restarted
-
+  ignore_errors: true
 

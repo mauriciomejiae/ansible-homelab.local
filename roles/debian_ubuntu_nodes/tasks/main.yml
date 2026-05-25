@@ -6,6 +6,11 @@
   ansible.builtin.apt:
     update_cache: yes
     upgrade: dist
+    
+- name: "Asegurar que ufw esté instalado"
+  ansible.builtin.apt:
+    name: ufw
+    state: present
 
 - name: "B2: DEB - Habilitar Firewall UFW"
   community.general.ufw:

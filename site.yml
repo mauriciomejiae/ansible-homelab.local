@@ -1,6 +1,7 @@
 ---
 - name: 🌟 ORQUESTACIÓN MAESTRA - HOMELAB 🌟
   hosts: all
+  ignore_unreachable: yes  # Esto hará que los nodos inaccesibles se marquen como "skipped" en lugar de fallar todo
   gather_facts: yes
   tasks:
     # 🔴 Ejecutar solo si el host pertenece al grupo RHEL

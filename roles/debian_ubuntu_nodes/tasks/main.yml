@@ -3,50 +3,101 @@
 # 🟢 10 TAREAS BÁSICAS (DEBIAN/UBUNTU)
 # ==========================================
 - name: "B1: DEB - Actualizar cache APT y paquetes"
-  ansible.builtin.apt: update_cache=yes upgrade=dist
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
+
 - name: "B2: DEB - Habilitar Firewall UFW"
-  community.general.ufw: state=enabled policy=allow
+  community.general.ufw:
+    state: enabled
+    policy: allow
+
 - name: "B3: DEB - Crear usuario estandar 'devops'"
-  ansible.builtin.user: name=devops shell=/bin/bash groups=sudo
+  ansible.builtin.user:
+    name: devops
+    shell: /bin/bash
+    groups: sudo
+
 - name: "B4: DEB - Revisar uso de disco"
   ansible.builtin.command: df -h
+
 - name: "B5: DEB - Configurar MOTD (Mensaje de bienvenida)"
-  ansible.builtin.copy: content="Bienvenido a PCLINUX PERÚ - Nodo Ubuntu/Debian\n" dest=/etc/motd
+  ansible.builtin.copy:
+    content: "Bienvenido a PCLINUX PERÚ - Nodo Ubuntu/Debian\n"
+    dest: /etc/motd
+
 - name: "B6: DEB - Instalar curl y wget"
-  ansible.builtin.apt: name=['curl', 'wget'] state=present
+  ansible.builtin.apt:
+    name: ['curl', 'wget']
+    state: present
+
 - name: "B7: DEB - Revisar syslog"
   ansible.builtin.command: tail -n 10 /var/log/syslog
-- name: "B8: DEB - Autoremove dependencias huérfanas"
-  ansible.builtin.apt: autoremove=yes autoclean=yes
-- name: "B9: DEB - Asegurar permisos de SSH"
-  ansible.builtin.file: path=/etc/ssh/sshd_config mode='0644'
-- name: "B10: DEB - Reiniciar servicio SSH"
-  ansible.builtin.service: name=ssh state=restarted
+  changed_when: false
 
+- name: "B8: DEB - Autoremove dependencias huérfanas"
+  ansible.builtin.apt:
+    autoremove: yes
+    autoclean: yes
+
+- name: "B9: DEB - Asegurar permisos de SSH"
+  ansible.builtin.file:
+    path: /etc/ssh/sshd_config
+    mode: '0644'
+
+- name: "B10: DEB - Reiniciar servicio SSH"
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
 
 # ==========================================
 # 🚀 10 TAREAS AVANZADAS (DEBIAN/UBUNTU)
 # ==========================================
 - name: "A1: DEB - Instalar dependencias para Docker"
-  ansible.builtin.apt: name=['apt-transport-https', 'ca-certificates', 'gnupg', 'lsb-release'] state=present
+  ansible.builtin.apt:
+    name: ['apt-transport-https', 'ca-certificates', 'gnupg', 'lsb-release']
+    state: present
+
 - name: "A2: DEB - Instalar Docker Engine (docker.io)"
-  ansible.builtin.apt: name=docker.io state=present
+  ansible.builtin.apt:
+    name: docker.io
+    state: present
+
 - name: "A3: DEB - Instalar Nginx (Proxy Inverso)"
-  ansible.builtin.apt: name=nginx state=present
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+
 - name: "A4: DEB - Habilitar Nginx"
-  ansible.builtin.service: name=nginx state=started enabled=yes
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: yes
+
 - name: "A5: DEB - Instalar MariaDB (Base de datos base)"
-  ansible.builtin.apt: name=mariadb-server state=present
+  ansible.builtin.apt:
+    name: mariadb-server
+    state: present
+
 - name: "A6: DEB - Instalar Fail2Ban para seguridad"
-  ansible.builtin.apt: name=fail2ban state=present
+  ansible.builtin.apt:
+    name: fail2ban
+    state: present
+
 - name: "A7: DEB - Iniciar Fail2Ban"
-  ansible.builtin.service: name=fail2ban state=started enabled=yes
+  ansible.builtin.service:
+    name: fail2ban
+    state: started
+    enabled: yes
+
 - name: "A8: DEB - Instalar Prometheus Node Exporter"
-  ansible.builtin.apt: name=prometheus-node-exporter state=present
+  ansible.builtin.apt:
+    name: prometheus-node-exporter
+    state: present
+
 - name: "A9: DEB - Reiniciar AppArmor"
-  ansible.builtin.service: name=apparmor state=restarted
-  ignore_errors: true
-- name: "A10: DEB - Limpiar logs antiguos (Logrotate manual)"
-  ansible.builtin.command: logrotate -f /etc/logrotate.conf
+  ansible.builtin.service:
+    name: apparmor
+    state: restarted
 
 

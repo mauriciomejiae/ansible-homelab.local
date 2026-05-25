@@ -1,0 +1,106 @@
+---
+# ==========================================
+# 🟢 10 TAREAS BÁSICAS (PROXMOX)
+# ==========================================
+- name: "B1: PVE - Obtener versión de Proxmox"
+  ansible.builtin.command: pveversion
+  register: pve_ver
+  changed_when: false
+
+- name: "B2: PVE - Verificar salud del Clúster"
+  ansible.builtin.command: pvecm status
+  ignore_errors: true
+  changed_when: false
+
+- name: "B3: PVE - Listar almacenamiento (Storage)"
+  ansible.builtin.command: pvesm status
+  changed_when: false
+
+- name: "B4: PVE - Actualizar paquetes del host Proxmox"
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: "B5: PVE - Verificar uso de CPU y RAM (pvestatd)"
+  ansible.builtin.service:
+    name: pvestatd
+    state: started
+
+- name: "B6: PVE - Sincronizar NTP"
+  ansible.builtin.service:
+    name: chronyd
+    state: started
+  ignore_errors: true
+
+- name: "B7: PVE - Instalar htop para monitorización"
+  ansible.builtin.apt:
+    name: htop
+    state: present
+
+- name: "B8: PVE - Chequeo de red (ping gateway)"
+  ansible.builtin.command: ping -c 2 192.168.1.1
+  changed_when: false
+
+- name: "B9: PVE - Listar VMs activas en nodo local"
+  ansible.builtin.command: qm list
+  changed_when: false
+
+- name: "B10: PVE - Limpiar logs de PVE"
+  ansible.builtin.command: journalctl --vacuum-time=7d
+
+# ==========================================
+# 🚀 10 TAREAS AVANZADAS (PROXMOX) - COMENTADAS
+# ==========================================
+
+# - name: "A1: PVE - Crear VM desde Template (vmid 200)"
+#   community.general.proxmox_kvm:
+#     api_user: "{{ proxmox_api_user }}"
+#     api_password: "{{ proxmox_api_password }}"
+#     api_host: "{{ ansible_host }}"
+#     node: "nodo1"
+#     name: "APP-AUTO-VM"
+#     clone: "template-ubuntu"
+#     vmid: 200
+#   ignore_errors: true
+
+# - name: "A2: PVE - Iniciar VM (vmid 200)"
+#   community.general.proxmox_kvm:
+#     api_user: "{{ proxmox_api_user }}"
+#     api_password: "{{ proxmox_api_password }}"
+#     api_host: "{{ ansible_host }}"
+#     vmid: 200
+#     state: started
+#   ignore_errors: true
+
+# - name: "A3: PVE - Snapshot de VM antes de parchar"
+#   ansible.builtin.command: qm snapshot 200 "pre-parcheo-ansible"
+#   ignore_errors: true
+
+# - name: "A4: PVE - Configurar Firewall de Clúster PVE"
+#   ansible.builtin.command: pve-firewall enable
+
+# - name: "A5: PVE - Chequeo de estado CEPH"
+#   ansible.builtin.command: ceph -s
+#   ignore_errors: true
+
+# - name: "A6: PVE - Habilitar alta disponibilidad (HA-Manager)"
+#   ansible.builtin.service:
+#     name: pve-ha-manager
+#     state: started
+
+# - name: "A7: PVE - Agregar almacenamiento NFS (Storage)"
+#   ansible.builtin.command: pvesm add nfs BackupNFS --server 192.168.1.10 --export /backups
+#   ignore_errors: true
+
+# - name: "A8: PVE - Migración en vivo (Live Migration - Simulada)"
+#   ansible.builtin.debug:
+#     msg: "Listo para qm migrate vmid target_node"
+
+# - name: "A9: PVE - Backup de VM a almacenamiento local"
+#   ansible.builtin.command: vzdump 200 --storage local --mode snapshot
+#   ignore_errors: true
+
+# - name: "A10: PVE - Reiniciar servicio de API PVE Proxy"
+#   ansible.builtin.service:
+#     name: pveproxy
+#     state: restarted

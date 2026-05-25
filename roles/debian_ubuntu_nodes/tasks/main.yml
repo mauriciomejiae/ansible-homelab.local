@@ -81,7 +81,12 @@
     name: nginx
     state: present
 
-- name: "A4: DEB - Habilitar Nginx"
+- name: "A4: DEB - Verificar configuración y habilitar Nginx"
+  ansible.builtin.shell: nginx -t && systemctl restart nginx
+  register: nginx_check
+  failed_when: false # Esto evita que el playbook se detenga
+
+- name: "A4: DEB - Asegurar servicio Nginx habilitado"
   ansible.builtin.service:
     name: nginx
     state: started

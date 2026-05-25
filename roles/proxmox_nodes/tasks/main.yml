@@ -38,7 +38,7 @@
     state: present
 
 - name: "B8: PVE - Chequeo de red (ping gateway)"
-  ansible.builtin.command: ping -c 2 192.168.1.1
+  ansible.builtin.command: ping -c 2 192.168.2.1
   changed_when: false
 
 - name: "B9: PVE - Listar VMs activas en nodo local"

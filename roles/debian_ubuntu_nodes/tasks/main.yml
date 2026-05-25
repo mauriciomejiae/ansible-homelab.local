@@ -1,6 +1,6 @@
 ---
 # ==========================================
-# 🟢 10 TAREAS BÁSICAS (DEBIAN/UBUNTU)
+# 🚀 10 TAREAS BASICAS (DEBIAN/UBUNTU)
 # ==========================================
 - name: "B1: DEB - Actualizar cache APT y paquetes"
   ansible.builtin.apt:
@@ -17,7 +17,7 @@
   community.general.ufw:
     state: enabled
     policy: allow
-  ignore_errors: true # Por si hay conflictos de red en contenedores o nodos específicos
+  ignore_errors: true
 
 - name: "B4: DEB - Crear usuario estandar 'devops'"
   ansible.builtin.user:
@@ -30,7 +30,7 @@
   ansible.builtin.command: df -h
   changed_when: false
 
-- name: "B6: DEB - Configurar MOTD (Mensaje de bienvenida)"
+- name: "B6: DEB - Configurar MOTD"
   ansible.builtin.copy:
     content: "Bienvenido a PCLINUX PERÚ - Nodo Ubuntu/Debian\n"
     dest: /etc/motd
@@ -38,21 +38,26 @@
 
 - name: "B7: DEB - Instalar curl y wget"
   ansible.builtin.apt:
-    name:
-      - curl
-      - wget
+    name: ['curl', 'wget']
     state: present
 
-- name: "B8: DEB - Revisar syslog"
-  ansible.builtin.command: tail -n 10 /var/log/syslog
+- name: "B8: DEB - Revisar los últimos 10 logs del sistema"
+  ansible.builtin.shell: |
+    if [ -f /var/log/syslog ]; then
+      tail -n 10 /var/log/syslog
+    else
+      journalctl -n 10 --no-pager
+    fi
+  register: log_output
   changed_when: false
+  failed_when: false
 
-- name: "B9: DEB - Autoremove dependencias huérfanas"
+- name: "B9: DEB - Autoremove dependencias"
   ansible.builtin.apt:
     autoremove: yes
     autoclean: yes
 
-- name: "B10: DEB - Asegurar permisos de SSH y reiniciar"
+- name: "B10: DEB - Asegurar permisos de SSH"
   ansible.builtin.file:
     path: /etc/ssh/sshd_config
     mode: '0644'
